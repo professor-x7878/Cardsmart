@@ -1,0 +1,372 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>اسمارٹ شناختی کارڈ ایڈیٹر | Smart CNIC Editor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&family=Roboto:wght@400;700&family=OCR+A+Extended&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #111;
+      font-family: 'Roboto', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #4CAF50;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .card-container {
+      position: relative;
+      width: 400px;
+      height: 620px;
+      background-image: url('https://i.postimg.cc/85JKCyYd/Picsart-25-07-27-12-57-38-430.jpg');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-position: center;
+      margin: 15px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+    }
+
+    .field {
+      position: absolute;
+      font-weight: bold;
+      color: black;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* English Text */
+    #name_en, #father_en {
+      font-family: 'OCR A Extended', monospace;
+      font-weight: 700;
+      font-size: 10px;
+      text-stroke: 0.4px black;
+      -webkit-text-stroke: 0.4px black;
+      text-align: left;
+      direction: ltr;
+      white-space: nowrap;
+      overflow: visible;
+    }
+
+    /* Date fields with adjusted font size and position */
+    #dob, #issue, #expiry {
+      font-family: 'OCR A Extended', monospace;
+      font-weight: 700;
+      font-size: 11px; /* Reduced font size */
+      text-stroke: 0.4px black;
+      -webkit-text-stroke: 0.4px black;
+      text-align: left;
+      direction: ltr;
+      white-space: nowrap;
+      overflow: visible;
+    }
+
+    /* CNIC Number */
+    #cnic {
+      font-family: 'OCR A Extended', monospace;
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: -0.5px;
+      text-stroke: 0.6px black;
+      -webkit-text-stroke: 0.6px black;
+      top: 245px;
+      left: 110px;
+      width: 138px;
+      text-align: left;
+      direction: ltr;
+      overflow: visible;
+    }
+
+    /* Urdu Text - Fixed full visibility */
+    #name_ur, #father_ur {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 12px;
+      line-height: 1.4;
+      text-align: right;
+      direction: rtl;
+      white-space: normal;
+      overflow: visible;
+      width: 210px;
+    }
+
+    /* Address - Multi-line Urdu */
+    #address {
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: right;
+      direction: rtl;
+      overflow: visible;
+      white-space: normal;
+    }
+
+    /* Field Positions - Adjusted date positions */
+    #name_en { top: 93px; left: 120px; width: 200px; }
+    #name_ur { top: 113px; left: 70px; width: 210px; }
+    #father_en { top: 150px; left: 120px; width: 200px; }
+    #father_ur { top: 173px; left: 70px; width: 210px; }
+    #gender { top: 210px; left: 130px; font-family: 'Roboto', sans-serif; font-size: 12px; width: 80px; text-align: left; }
+    #cnic { top: 245px; left: 110px; width: 138px; }
+    #dob { top: 245px; left: 210px; width: 70px; }
+    #issue { top: 277px; left: 120px; width: 90px; }
+    #expiry { top: 277px; left: 210px; width: 90px; }
+    #address { top: 315px; left: 2px; width: 230px; }
+
+    /* Photo Positions */
+    .photo-front {
+      position: absolute;
+      top: 110px;
+      left: 290px;
+      width: 90px;
+      height: 100px;
+      object-fit: cover;
+      border: 2px solid #000000;
+      z-index: 2;
+    }
+
+    .photo-back {
+      position: absolute;
+      top: 350px;
+      left: 20px;
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      filter: blur(0px);
+      opacity: 0.7;
+      border: 1px solid #ccc;
+      z-index: 1;
+    }
+
+    .form {
+      width: 400px;
+      background: #222;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #4CAF50;
+      font-weight: bold;
+    }
+
+    .form-group input, .form-group select, .form-group .file-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #444;
+      border-radius: 4px;
+      background: #333;
+      color: white;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    .form-group select {
+      cursor: pointer;
+    }
+
+    .file-input {
+      background: #444;
+    }
+
+    .btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .btn:hover {
+      background: #45a049;
+    }
+
+    .photo-preview {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .photo-preview img {
+      max-width: 80px;
+      max-height: 80px;
+      border: 1px solid #444;
+    }
+
+    .bilingual-label {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <h2 class="bilingual-label">
+    <span>اسمارٹ شناختی کارڈ ایڈیٹر</span>
+    <span>Smart CNIC Editor</span>
+  </h2>
+
+  <div class="card-container">
+    <!-- Photo Places -->
+    <img id="front-photo" class="photo-front" style="display: none;">
+    <img id="back-photo" class="photo-back" style="display: none;">
+    
+    <!-- Fields with sample text -->
+    <div class="field" id="name_en">ALI AHMED KHAN</div>
+    <div class="field" id="name_ur">علی احمد خان</div>
+    <div class="field" id="father_en">MUHAMMAD AKBAR</div>
+    <div class="field" id="father_ur">محمد اکبر</div>
+    <div class="field" id="gender">MALE</div>
+    <div class="field" id="cnic">42201-1234567-8</div>
+    <div class="field" id="dob">15-03-1990</div>
+    <div class="field" id="issue">10-01-2020</div>
+    <div class="field" id="expiry">09-01-2030</div>
+    <div class="field" id="address">ہاؤس نمبر123،گلی5،فیصل ٹاؤن، لاہور، پنجاب، پاکستان</div>
+  </div>
+
+  <div class="form">
+    <div class="form-group">
+      <label for="input_name_en">Name (English)</label>
+      <input type="text" id="input_name_en" oninput="update('name_en', this.value.toUpperCase())">
+    </div>
+
+    <div class="form-group">
+      <label for="input_name_ur">نام (اردو)</label>
+      <input type="text" id="input_name_ur" oninput="update('name_ur', this.value)">
+    </div>
+
+    <div class="form-group">
+      <label for="input_father_en">Father's Name (English)</label>
+      <input type="text" id="input_father_en" oninput="update('father_en', this.value.toUpperCase())">
+    </div>
+
+    <div class="form-group">
+      <label for="input_father_ur">والد کا نام (اردو)</label>
+      <input type="text" id="input_father_ur" oninput="update('father_ur', this.value)">
+    </div> 
+
+    <div class="form-group">
+      <label for="input_gender">Gender</label>
+      <select id="input_gender" onchange="update('gender', this.value.toUpperCase())">
+        <option value="M">M</option>
+        <option value="F">F</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="input_cnic">CNIC Number</label>
+      <input type="text" id="input_cnic" oninput="update('cnic', this.value)">
+    </div>
+
+    <div class="form-group">
+      <label for="input_dob">Date of Birth (DD-MM-YYYY)</label>
+      <input type="text" id="input_dob" oninput="update('dob', this.value)">
+    </div>
+
+    <div class="form-group">
+      <label for="input_issue">Issue Date (DD-MM-YYYY)</label>
+      <input type="text" id="input_issue" oninput="update('issue', this.value)">
+    </div>
+
+    <div class="form-group">
+      <label for="input_expiry">Expiry Date (DD-MM-YYYY)</label>
+      <input type="text" id="input_expiry" oninput="update('expiry', this.value)">
+    </div>
+
+    <div class="form-group">
+      <label for="input_address">پتہ (اردو)</label>
+      <input type="text" id="input_address" oninput="update('address', this.value)">
+    </div>
+
+    <div class="form-group">
+      <label>Front Photo</label>
+      <input type="file" id="front-photo-input" class="file-input" accept="image/*" onchange="previewPhoto('front-photo-input', 'front-photo')">
+      <div class="photo-preview">
+        <img id="front-photo-preview" style="display: none;">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Back Photo</label>
+      <input type="file" id="back-photo-input" class="file-input" accept="image/*" onchange="previewPhoto('back-photo-input', 'back-photo')">
+      <div class="photo-preview">
+        <img id="back-photo-preview" style="display: none;">
+      </div>
+    </div>
+
+    <button class="btn" onclick="downloadCard()">Download CNIC</button>
+  </div>
+
+  <script>
+    // Initialize with sample data
+    document.addEventListener('DOMContentLoaded', function() {
+      update('name_en', '');
+      update('name_ur', '');
+      update('father_en', '');
+      update('father_ur', '');
+      update('gender', 'M');
+      update('cnic', '');
+      update('dob', '');
+      update('issue', '');
+      update('expiry', '');
+      update('address', 'ہاؤس نمبر123،گلی5،فیصل  ٹاؤن، لاہور، پنجاب، پاکستان');
+    });
+
+    function update(id, value) {
+      const field = document.getElementById(id);
+      field.innerText = value;
+      
+      const inputField = document.getElementById('input_' + id);
+      if(inputField) {
+        inputField.value = value.replace(/\n/g, '');
+      }
+    }
+
+    function previewPhoto(inputId, imgId) {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(imgId);
+      const previewContainer = document.getElementById(imgId + '-preview');
+
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          
+          if (previewContainer) {
+            previewContainer.src = e.target.result;
+            previewContainer.style.display = 'block';
+          }
+        };
+
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function downloadCard() {
+      alert('Download functionality would be implemented here. In a real application, this would save the card as an image.');
+      // In a real implementation, you would use html2canvas or similar library to capture the card as an image
+      // For example: html2canvas(document.querySelector('.card-container')).then(canvas => {...});
+    }
+  </script>
+</body>
+</html>
